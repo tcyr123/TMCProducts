@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f5="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title></title>
+    </h:head>
+    <h:body>
+        <!-- Importing layout then editing --> 
+        <ui:composition template="template/layout.xhtml">     
+
+            <!-- Essentially on/off switches for the different layout sections-->
+            <ui:param name="wrapperWidth" value="1055px"/> 
+            <ui:param name="search" value="true"/>
+            <ui:param name="title" value="true"/>
+            <ui:param name="login" value="true"/>
+            <ui:param name="loginsearch" value="true"/>
+            <ui:param name="right" value="false"/>
+            <ui:param name="left" value="true"/>
+
+            <ui:define  name="login">
+                <!-- Show login input on load --> 
+                <ui:fragment rendered="#{signInBean.isLoggedIn eq false}">
+                    <h:form id="loginFormId">
+                        <h:inputText styleClass="inputs" f5:type="email"
+                                     f5:placeholder="E-mail" 
+                                     value="#{signInBean.username}"/>            
+                        <h:inputSecret  styleClass="inputs" 
+                                        f5:placeholder="Password" 
+                                        value="#{signInBean.password}"/>            
+                        <h:commandButton styleClass="lbutton" value="Login"
+                                         action="#{signInBean.validateUser()}"/>
+                    </h:form>
+                </ui:fragment>
+                <!-- Show "Hi, username" if user is logged in-->
+                <ui:fragment rendered="#{signInBean.isLoggedIn eq true}">
+                    <h3 style=" background-color: white">Hi, #{signInBean.username}</h3>
+                </ui:fragment>
+            </ui:define> 
+            <!-- saves search bar as variable -->
+            <ui:define name="search">
+                <h:form id="searchFormId">
+                    <h:inputText styleClass="inputs" f5:placeholder="Search" 
+                                 value="#{queryBean.searchQuery}"  />
+                    <h:commandButton styleClass="lbutton" value="Go" 
+                                     action="#{queryBean.manualSearch()}" />
+                </h:form>
+            </ui:define>
+            <!-- Makes sure 'default title' doesn't show -->
+            <ui:define name="title">  
+                <p> </p><br/>
+                <p> </p>
+            </ui:define> 
+            <!-- Makes sure 'default top' doesn't show -->
+            <ui:define name="top">  
+                <p> </p><br/>
+                <p> </p>
+            </ui:define> 
+            <ui:define name="logo">
+                <p> </p>
+            </ui:define>
+
+            <!-- Home | Services | About Us | Contact Us -->
+            <ui:define name="menu">
+                <ui:include src="rafaMenu.xhtml" />
+            </ui:define>
+
+            <ui:param name="leftWidth" value="200px"/>
+
+            <ui:define name="left">
+                <ui:include src="slideMenu.xhtml"/>
+            </ui:define>
+
+            <ui:define name="content">  
+                <h:form>
+                    <h:panelGrid columns="1" style="font-size: initial;
+                                 margin-left:auto;margin-right:auto;width:100%;
+                                 text-align: center;">
+                        <h1 align="center">PRODUCTS</h1>
+<!-- all products -->
+                            <ui:fragment rendered="#{queryBean.isSearching eq false and queryBean.isSearchingManual eq false}">
+                                <c:forEach rendered="#{queryBean.isSearching eq false and queryBean.isSearchingManual eq false}" var="dev" items="#{queryBean.findAllInfo2()}">
+                                    <ui:include src="/template/items/products.xhtml">
+                                        <!--Defining variables passed from products.xhtml -->
+                                        <ui:param name="titleVar" value="#{dev.title}" />
+                                        <ui:param name="price" value="#{dev.price}" />
+                                        <ui:param class="img"  name="image" value="#{dev.picture_ref}"/>
+                                        <ui:param name="qty" value="#{dev.qty}" />
+                                        <ui:param name="desc" value="#{dev.description}"/>
+                                        <ui:param name="item_no" value="#{dev.item_no}"/>
+                                    </ui:include>
+                            </c:forEach></ui:fragment>
+
+<!-- search bar -->                  
+<ui:fragment rendered="#{queryBean.isSearchingManual eq true and queryBean.isSearching eq true}">
+                            <ui:repeat value="#{queryBean.search()}" var="dev2">
+                                    <ui:include src="/template/items/products.xhtml">
+                                        <ui:param name="titleVar" value="#{dev2.title}" />
+                                        <ui:param name="price" value="#{dev2.price}" />
+                                        <ui:param class="img"  name="image" value="#{dev2.picture_ref}"/>
+                                        <ui:param name="qty" value="#{dev2.qty}" />
+                                        <ui:param name="desc" value="#{dev2.description}"/>
+                                        <ui:param name="item_no" value="#{dev2.item_no}"/>
+                                    </ui:include>
+                            </ui:repeat></ui:fragment>
+<!-- menu search -->                      
+                        <ui:fragment rendered="#{queryBean.isSearching == true and queryBean.isSearchingManual eq false}">
+                                <ui:param name="dev3" value="#{queryBean.searchNum(queryBean.numSelected)}" />
+                                    <ui:include src="/template/items/products.xhtml">
+                                        <!--Defining variables passed from products.xhtml -->
+                                        <ui:param name="titleVar" value="#{dev3.title}" />
+                                        <ui:param name="price" value="#{dev3.price}" />
+                                        <ui:param class="img"  name="image" value="#{dev3.picture_ref}"/>
+                                        <ui:param name="qty" value="#{dev3.qty}" />
+                                        <ui:param name="desc" value="#{dev3.description}"/>
+                                        <ui:param name="item_no" value="#{dev3.item_no}"/>
+                                    </ui:include>
+                                
+<!--Show Next/Prev buttons while 1 item is pushed -->
+                                    <ui:fragment rendered="#{queryBean.isSearching eq true}">
+                                        <h:commandButton class="lbutton" style="float: left; margin-left: 150px;" value="Prev" action="#{queryBean.roundaboutP()}" />
+                                        <h:commandButton class="lbutton" style="float: right; margin-right: 150px;" value="Next" action="#{queryBean.roundaboutN()}"/> 
+                                </ui:fragment>   
+                        </ui:fragment>
+                    </h:panelGrid>
+                </h:form>
+            </ui:define>
+
+            <ui:define name="bottom">
+                SLCC ASDV © 2020. All Rights Reserved.
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+

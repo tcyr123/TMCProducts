@@ -1,0 +1,11 @@
+#top {        
+    color: white;
+    font-family: 'stencil';
+    font-size: 35px;    
+    text-align: center;
+    vertical-align: middle;
+    align-content: center;
+    height: 90px;
+    max-height: 90px;
+    background-image: linear-gradient(-360deg, yellow 0%, black 85%);
+}

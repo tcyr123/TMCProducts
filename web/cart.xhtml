@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f5="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title></title>   
+    </h:head>
+    <h:body>
+        <!--The same as index, except remove search & left pane -->
+        <ui:composition template="template/layout.xhtml">     
+
+            <ui:param name="wrapperWidth" value="1055px"/>
+            <ui:param name="search" value="false"/>
+            <ui:param name="title" value="true"/>
+            <ui:param name="login" value="false"/>
+            <ui:param name="loginsearch" value="true"/>
+            <ui:param name="right" value="false"/>
+            <ui:param name="left" value="false"/>
+
+            <ui:define name="title">
+
+            </ui:define>
+
+            <ui:define  name="login">
+                <ui:fragment rendered="#{signInBean.isLoggedIn eq false}">
+                    <h:form id="loginFormId">
+                        <h:inputText styleClass="inputs" f5:type="email" f5:placeholder="E-mail" value="#{signInBean.username}"/>            
+                        <h:inputSecret  styleClass="inputs" f5:placeholder="Password" value="#{signInBean.password}"/>            
+                        <h:commandButton styleClass="lbutton" value="Login" action="#{signInBean.validateUser()}"/>
+                    </h:form>
+                </ui:fragment>
+                
+                <ui:fragment rendered="#{signInBean.isLoggedIn eq true}">
+                    <h3 style=" background-color: white">Hi, #{signInBean.username}</h3>
+                </ui:fragment>
+            </ui:define> 
+            
+            <ui:define name="search">
+                <h:form id="searchFormId">
+                    <h:inputText styleClass="inputs" f5:placeholder="Search"  />
+                    <h:commandButton styleClass="lbutton" value="Go" />
+                </h:form>
+            </ui:define>
+
+            <ui:define name="logo"/>
+
+            <ui:define name="top">     
+                <p> </p><br/>
+                <p> </p>
+            </ui:define> 
+
+            <ui:define name="menu">
+                <ui:include src="rafaMenu.xhtml" />
+            </ui:define>
+
+            <ui:param name="leftWidth" value="200px"/>
+
+            <!--Standard email form. Will send auto-crafted email to my school email -->
+             <ui:define name="content">  
+                 <h:form>
+                 <h1 align="center">Shopping Cart</h1>
+                 <h:commandButton style="float: right" class="lbutton" value="Clear Cart" action="#{purchaseBean.removeAll()}"/>
+                        <h:dataTable
+                            value="#{purchaseBean.cartList()}"
+                            var="Table"
+                            styleClass="suppliers"
+                            style="text-align: center;"
+                            headerClass="supplierHeader"
+                            rowClasses="oddRow, evenRow">
+                            <h:column>
+                                <f:facet name="header">title</f:facet>
+                                    #{Table.title}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">price</f:facet>
+                                    #{Table.price}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">qty</f:facet>
+                                    #{Table.qty}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Line Total</f:facet>
+                                <h:outputText value="#{Table.price * Table.qty}">
+                                 <f:convertNumber pattern="#0.00"/>
+                                </h:outputText>
+                            </h:column>
+                            
+                            <h:column>
+                                <f:facet name="header">Edit</f:facet>
+                                <h:commandButton value="+" action="#{purchaseBean.plusOneQty(Table.key)}"></h:commandButton>
+                                <h:commandButton value="-" action="#{purchaseBean.subOneQty(Table.key)}"></h:commandButton><br/>
+                                <h:commandButton value="Remove" action="#{purchaseBean.remove(Table.key)}"></h:commandButton>
+                            </h:column>
+                            
+                        </h:dataTable>
+                 <h:panelGrid style="margin: auto" columns="2" border="1" cellspacing="1" >
+
+                    Items: <h:outputText value="#{purchaseBean.totalItems()}" ><f:convertNumber pattern="#0"/></h:outputText>
+                    Total: <h:outputText value="#{purchaseBean.totalAmount()}" ><f:convertNumber pattern="#0.00"/></h:outputText>
+
+                </h:panelGrid>
+                 <div style="margin: auto">
+                 <h:commandButton disabled="#{purchaseBean.totalAmount() eq 0}" class="lbutton" value="Check Out" action="creditCard" immediate="true" />
+                 </div>
+                    </h:form>
+            </ui:define> 
+
+            <ui:define name="bottom">
+                SLCC ASDV © 2020. All Rights Reserved.
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+
+
+
+
+

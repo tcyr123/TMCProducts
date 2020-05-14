@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f5="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title></title>   
+    </h:head>
+    <h:body>
+        <!--The same as index, except remove search & left pane -->
+        <ui:composition template="/template/layout.xhtml">     
+
+            <ui:param name="wrapperWidth" value="1055px"/>
+            <ui:param name="search" value="false"/>
+            <ui:param name="title" value="true"/>
+            <ui:param name="login" value="false"/>
+            <ui:param name="loginsearch" value="true"/>
+            <ui:param name="right" value="false"/>
+            <ui:param name="left" value="false"/>
+            
+
+            <ui:define name="title">
+
+            </ui:define>
+
+            <ui:define  name="login">
+                <ui:fragment rendered="#{signInBean.isLoggedIn eq false}">
+                    <h:form id="loginFormId">
+                        <h:inputText styleClass="inputs" f5:type="email" f5:placeholder="E-mail" value="#{signInBean.username}"/>            
+                        <h:inputSecret  styleClass="inputs" f5:placeholder="Password" value="#{signInBean.password}"/>            
+                        <h:commandButton styleClass="lbutton" value="Login" action="#{signInBean.validateUser()}"/>
+                    </h:form>
+                </ui:fragment>
+                
+                <ui:fragment rendered="#{signInBean.isLoggedIn eq true}">
+                    <h3 style=" background-color: white">Hi, #{signInBean.username}</h3>
+                </ui:fragment>
+            </ui:define> 
+            
+            <ui:define name="search">
+                <h:form id="searchFormId">
+                    <h:inputText styleClass="inputs" f5:placeholder="Search"  />
+                    <h:commandButton styleClass="lbutton" value="Go" />
+                </h:form>
+            </ui:define>
+
+            <ui:define name="logo"/>
+
+            <ui:define name="top">     
+                <p> </p><br/>
+                <p> </p>
+            </ui:define> 
+
+            <ui:define name="menu">
+                
+            </ui:define>
+
+            <ui:param name="leftWidth" value="200px"/>
+
+             <ui:define name="content">  
+                 <h3> First page in the credit card flow </h3>
+        <b>Is flow alive? #{null != facesContext.application.flowHandler.currentFlow}</b><br/>
+        <b>Flow Id: #{facesContext.application.flowHandler.currentFlow.id}</b><br/>
+
+        <h:form prependId="false">
+            First Name: <h:inputText required="true" value="#{creditCardBean.firstName}"/><br/>
+            Last Name: <h:inputText required="true" value="#{creditCardBean.lastName}"/><br/>
+            Phone Number: <h:inputText required="true" value="#{creditCardBean.phoneNumber}"/><br/>
+            Address: <h:inputText required="true" value="#{creditCardBean.address}">
+            <f:validateRegex pattern="^\d+\s{1}\w*\s?\w*"/>
+            </h:inputText><br/>
+            City: <h:inputText required="true" value="#{creditCardBean.city}"/><br/>
+            State: <h:inputText required="true" value="#{creditCardBean.state}"/><br/>
+            Zip: <h:inputText required="true" value="#{creditCardBean.ZIP}">
+            <f:validateRegex pattern="^\d{5}(-\d{4})?$"/>
+            </h:inputText><br/>
+            <hr/>
+            <br/>
+            Credit Card #: <h:inputText required="true" value="#{creditCardBean.cardNum}">
+            <f:validateRegex pattern="^(5[1-5][0-9]{14})$"/>
+            </h:inputText><br/>
+            Exp Date(mmyy): <h:inputText required="true" value="#{creditCardBean.expDate}">
+            <f:validateRegex pattern="^((0[1-9])|(1[0-2]))(\d{2})$"/>
+            </h:inputText><br/>
+            CVC Code: <h:inputText required="true" value="#{creditCardBean.cvc}">
+            <f:validateRegex pattern="\d{3}"/>
+            </h:inputText><br/>
+            <h:commandButton value="Purchase" action="#{purchaseBean.checkOut(purchaseBean.setOutcome(creditCardBean.purchase()))}" >  
+<!--                <f:actionListener binding="# {purchaseBean.outcome}" />-->
+            </h:commandButton>         
+            <h:commandButton value="Back (exit flow)" immediate="true" action="taskFlowReturnIndex"/>  
+        </h:form>
+        <ul>
+            <li>"5555555555554444", "0321", "087" <span style="color: green">good</span> </li>
+        <li>"5555555555557462", "0321", "087" <span style="color: red">declined</span> </li>
+        <li>"5555555555558742", "0321", "087" <span style="color: red">expired</span></li>
+        <li>"5555555555558726", "0321", "087" <span style="color: red">invalid</span></li>
+        <li>"5555555555550145", "0321", "087" <span style="color: red">system</span></li>
+        <li>"5506920809243667", "0321", "087" <span style="color: orange">under review</span></li>
+        </ul>
+        <p>//i believe the last one won't work unless you set 'check cvc and exp date
+        in simplify's setting</p>
+                 
+            </ui:define> 
+
+            <ui:define name="bottom">
+                SLCC ASDV © 2020. All Rights Reserved.
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+
+
+
+
+

@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f5="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title></title>   
+    </h:head>
+    <h:body>
+        <!--The same as index, except removed search, login, & left pane -->
+        <ui:composition template="template/layout.xhtml">     
+
+            <ui:param name="wrapperWidth" value="1055px"/>
+            <ui:param name="search" value="false"/>
+            <ui:param name="title" value="true"/>
+            <ui:param name="login" value="false"/>
+            <ui:param name="loginsearch" value="true"/>
+            <ui:param name="right" value="false"/>
+            <ui:param name="left" value="false"/>
+
+            <ui:define name="title"></ui:define>
+
+            <ui:define name="logo"/>
+
+            <ui:define name="top">     
+                <p> </p><br/>
+                <p> </p>
+            </ui:define> 
+
+            <ui:define name="menu">
+                <ui:include src="rafaMenu.xhtml" />
+            </ui:define>
+
+            <ui:param name="leftWidth" value="200px"/>
+
+             <ui:define name="content">   
+                 <h:form>
+                     <h2>Register</h2>
+                     <h:panelGrid columns="2">
+                         Username: <h:inputText f5:type="email" f5:placeholder="E-mail" styleClass="inputs"  value="#{signInBean.username}"/>
+                         password: <h:inputSecret f5:placeholder="Password" styleClass="inputs" value="#{signInBean.password}"/>
+                     </h:panelGrid>
+                     <h:commandButton styleClass="lbutton" value="Create Account" action="#{signInBean.ins()}"/>
+                 </h:form>            
+            </ui:define> 
+
+            <ui:define name="bottom">
+                SLCC ASDV © 2020. All Rights Reserved.
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+
+
+
+
+

@@ -1,0 +1,20 @@
+body {
+    background-repeat: no-repeat;
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0, #120205),
+        color-stop(1, #0046be)
+        );
+    background-image: -o-linear-gradient(bottom, #120205 0%, #0046be 20%);
+    background-image: -moz-linear-gradient(bottom, #120205 0%, #0046be 20%);
+    background-image: -webkit-linear-gradient(bottom, #120205 0%, #0046be 20%);
+    background-image: -ms-linear-gradient(bottom, #120205 0%, #0046be 20%);
+    background-image: linear-gradient(to bottom, #120205 0%, #0046be 20%); 
+    font-size: 12px;
+    /*font-family: Verdana, "Verdana CE",  Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;*/
+    color: #000000;  
+    margin: 2px;
+}
+

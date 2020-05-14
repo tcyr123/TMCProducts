@@ -1,0 +1,25 @@
+
+* {box-sizing: border-box;}
+
+.img-zoom-container {
+  position: relative;
+}
+
+.img-zoom-lens {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  /*set the size of the lens:*/
+  width: 50px;
+  height: 50px;
+}
+
+.img-zoom-result {
+
+  border: 1px solid #d4d4d4;
+  /*set the size of the result div:*/
+  width: 150px;
+  height: 150px;
+  margin-right: auto;
+  margin-left: auto;
+}
+

@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f5="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title></title> 
+    </h:head>
+    <h:body>
+        <!-- Importing layout then editing --> 
+        <ui:composition template="template/layout.xhtml">     
+
+            <!-- Essentially on/off switches for the different layout sections-->
+            <ui:param name="wrapperWidth" value="1055px"/> 
+            <ui:param name="search" value="false"/>
+            <ui:param name="title" value="true"/>
+            <ui:param name="login" value="true"/>
+            <ui:param name="loginsearch" value="true"/>
+            <ui:param name="right" value="false"/>
+            <ui:param name="left" value="true"/>
+            <ui:param name="menu" value="false"/>
+
+            <ui:define  name="login">
+                <!-- Show "Sign Out: username" -->
+                <h3 style=" background-color: white">Hi, #{signInBean.username}</h3>
+            </ui:define> 
+            <!-- saves search bar as variable -->
+            <ui:define name="search">
+                <h:form id="searchFormId">
+                    <h:commandButton styleClass="lbutton"
+                                     action="#{signInBean.signOut()}"
+                                     value="Sign Out"/>
+                </h:form>
+            </ui:define>
+            <!-- Makes sure 'default title' doesn't show -->
+            <ui:define name="title">  
+                <p> </p><br/>
+                <p> </p>
+            </ui:define> 
+            <!-- Makes sure 'default top' doesn't show -->
+            <ui:define name="top">  
+                <p> </p><br/>
+                <p> </p>
+            </ui:define> 
+            <ui:define name="logo">
+                <p> </p>
+            </ui:define>
+
+            <ui:param name="leftWidth" value="200px"/>
+
+            <ui:define name="left">
+                <h:form>
+                    <h:commandButton style="width: 70%; margin: 5px;" 
+                                     value="Download PDF" 
+                                     action="#{adminBean.setChoice('download')}"/><br/>
+                    <h:commandButton style="width: 70%; margin: 5px;"
+                                     value="Upload PNG" 
+                                     action="#{adminBean.setChoice('upload')}"/><br/>
+                    <h:commandButton style="width: 70%; margin: 5px;"
+                                     value="Insert Product" 
+                                     action="#{adminBean.setChoice('insert')}"/><br/>
+                    <h:commandButton style="width: 70%; margin: 5px;"
+                                     value="Delete Product" 
+                                     action="#{adminBean.setChoice('delete')}"/><br/>
+                    <h:commandButton style="width: 70%; margin: 5px;"
+                                     value="Update Product" 
+                                     action="#{adminBean.setChoice('update')}"/><br/>
+                    <h:commandButton style="width: 70%; margin: 5px;"
+                                     value="List All" 
+                                     action="#{adminBean.setChoice('all')}"/>
+                </h:form>
+            </ui:define>
+
+
+            <ui:define name="content">  
+                <h:form enctype="multipart/form-data"> <!-- VIEWS: -->    
+                    <!-- NEVER HAPPENS -->
+                    <ui:fragment rendered="#{adminBean.choice eq 'none'}">
+                        <h1 align="center">Hello Admin! Choose a function</h1>
+                    </ui:fragment>
+
+                    <!-- DOWNLOAD -->
+                    <ui:fragment rendered="#{adminBean.choice eq 'download'}">
+                        <h1 align="center">DOWNLOAD</h1>
+                        <div align="center">
+                            <h:selectOneListbox value="#{callServletBean.song}">
+                                <f:selectItems value="#{callServletBean.songs}"/>
+                            </h:selectOneListbox><br/><br/><br/>
+
+                            <h:selectOneMenu value="#{callServletBean.option}">
+                                <f:selectItem itemLabel="Today's Review" 
+                                              itemValue="todayPDF"/>
+                                <f:selectItem itemLabel="Month Review"
+                                              itemValue="totalPDF"/>
+                            </h:selectOneMenu><br/><br/><br/>
+
+                            <h:commandButton class="lbutton" value="Download"
+                                             action="#{callServletBean.selectSong()}"/>
+                        </div>
+                    </ui:fragment>
+
+                    <!-- UPLOAD -->
+                    <ui:fragment rendered="#{adminBean.choice eq 'upload'}">
+                        <h1 align="center">UPLOAD</h1>
+                        <h3>Title: </h3><h:inputText value="#{adminBean.pngTitle}" />
+                        <h:form enctype="multipart/form-data" prependId="false"> <!--enctype="multipart/form-data" -->
+                            <h:outputText value="File: "></h:outputText>
+                            <h:inputFile value="#{adminBean.uploadedFile}"/>
+
+                            <h:commandButton value="Save" type="submit" action="#{adminBean.saveFile()}" />
+                        </h:form>
+                    </ui:fragment>
+
+                    <!-- INSERT -->
+                    <ui:fragment rendered="#{adminBean.choice eq 'insert'}">
+                        <h1 align="center">INSERT</h1>
+                        <h:panelGrid  columns="2" width="75%" bgcolor="white" 
+                                      style=" border: 3px black solid; 
+                                      margin: 0 auto; height:50vh; font-size: initial">
+                            <b>Item_no:</b><h:inputText required="true" value="#{adminBean.item_no}" /><br/>
+                            <b>Title:</b><h:inputText required="true" value="#{adminBean.title}" /><br/>
+                            <b>Price:</b><h:inputText required="true" value="#{adminBean.price}"/><br/>
+                            <b>Category:</b><h:inputText required="true" value="#{adminBean.category}"/><br/>
+                            <b>Pic_ref:</b><h:inputText required="true" value="#{adminBean.picture_ref}" /><br/>  
+                            <b>Qty:</b><h:inputText required="true" value="#{adminBean.qty}"/><br/>
+                            <b>Desc:</b><h:inputTextarea required="true" value="#{adminBean.description}" /><br/>
+                            <h:commandButton class="lbutton" value="Insert" action="#{adminBean.insert()}" />
+                        </h:panelGrid>
+                    </ui:fragment>
+
+                    <!-- DELETE -->
+                    <ui:fragment rendered="#{adminBean.choice eq 'delete'}">
+                        <h1 align="center">DELETE</h1>
+                        <h:panelGrid  columns="2" width="75%" bgcolor="white" 
+                                      style=" border: 3px black solid; 
+                                      margin: 0 auto; height:50vh; font-size: initial">
+                            <b>Item_no:</b><h:selectOneMenu  value="#{adminBean.item_no}" 
+                                                             required="true" 
+                                                             requiredMessage="Must choose item">
+                                <f:selectItem itemValue="#{null}" itemLabel="--select--" />
+                                <f:selectItems var="userID" value="#{adminBean.allItemNo}" />
+                                <f:ajax listener="#{adminBean.valueChangeMethod(e)}" render="@form" execute="@this" /> 
+                            </h:selectOneMenu><br/>
+                            <b>Title:</b><h:outputText value="#{adminBean.title}" /><br/>
+                            <b>Price:</b><h:outputText value="#{adminBean.price}"/><br/>
+                            <b>Category:</b><h:outputText value="#{adminBean.category}"/><br/>
+                            <b>Pic_ref:</b><h:outputText value="#{adminBean.picture_ref}" /><br/>  
+                            <b>Qty:</b><h:outputText value="#{adminBean.qty}"/><br/>
+                            <b>Desc:</b><h:outputText value="#{adminBean.description}" /><br/>
+                            <h:commandButton class="lbutton" value="Delete" action="#{adminBean.delete()}" />
+                        </h:panelGrid>
+                    </ui:fragment>
+
+                    <!-- UPDATE -->
+                    <ui:fragment rendered="#{adminBean.choice eq 'update'}">
+                        <h1 align="center">UPDATE</h1>
+                        <h:panelGrid  columns="2" width="75%" bgcolor="white" 
+                                      style=" border: 3px black solid; 
+                                      margin: 0 auto; height:50vh; font-size: initial">
+                            <b>Item_no:</b><h:selectOneMenu  value="#{adminBean.item_no}" 
+                                                             required="true" 
+                                                             requiredMessage="Must choose item">
+                                <f:selectItem itemValue="#{null}" itemLabel="--select--" />
+                                <f:selectItems var="userID" value="#{adminBean.allItemNo}" />
+                                <f:ajax listener="#{adminBean.valueChangeMethod(e)}" render="@form" execute="@this" /> 
+                            </h:selectOneMenu><br/>
+                            <b>Title:</b><h:inputText required="true" value="#{adminBean.title}" /><br/>
+                            <b>Price:</b><h:inputText required="true" value="#{adminBean.price}"/><br/>
+                            <b>Category:</b><h:inputText required="true" value="#{adminBean.category}"/><br/>
+                            <b>Pic_ref:</b><h:inputText required="true" value="#{adminBean.picture_ref}" /><br/>  
+                            <b>Qty:</b><h:inputText required="true" value="#{adminBean.qty}"/><br/>
+                            <b>Desc:</b><h:inputTextarea required="true" value="#{adminBean.description}" /><br/>
+                            <h:commandButton class="lbutton" value="Update" action="#{adminBean.update()}" />
+                        </h:panelGrid>
+                    </ui:fragment>
+
+                    <!-- LIST ALL -->
+                    <ui:fragment rendered="#{adminBean.choice eq 'all'}">
+                        <h1 align="center">LIST ALL</h1>
+                        <h:dataTable
+                            value="#{adminBean.findAll()}"
+                            var="Table"
+                            styleClass="suppliers"
+                            style="text-align: center;"
+                            headerClass="supplierHeader"
+                            rowClasses="oddRow, evenRow">
+                            <h:column>
+                                <f:facet name="header">title</f:facet>
+                                    #{Table.title}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">price</f:facet>
+                                    #{Table.price}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">category</f:facet>
+                                    #{Table.category}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">picture_ref</f:facet>
+                                    #{Table.picture_ref}
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">qty</f:facet>
+                                    #{Table.qty}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">item_no</f:facet>
+                                    #{Table.item_no}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">description</f:facet>
+                                    #{Table.description}
+                            </h:column>
+                        </h:dataTable>
+                    </ui:fragment>
+                    <h:messages globalOnly="true" />
+                </h:form>
+
+            </ui:define> 
+
+            <ui:define name="bottom">
+                SLCC ASDV © 2020. All Rights Reserved.
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+

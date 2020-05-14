@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition><!--Necessary jQuery zoom code -->
+        <style type="text/css">
+            * {margin: 0; padding: 0;}
+            .magnify {width: 300px; margin: 50px auto; position: relative;}
+
+            /*Lets create the magnifying glass*/
+            .large {
+                width: 300px; height: 300px;
+                position: absolute;
+                border-radius: 100%;
+
+                /*Multiple box shadows to achieve the glass effect*/
+                box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.85), 
+                    0 0 7px 7px rgba(0, 0, 0, 0.25), 
+                    inset 0 0 40px 2px rgba(0, 0, 0, 0.25);
+
+                /*Lets load up the large image first*/
+                background: url('#{image}') no-repeat;
+
+                /*hide the glass by default*/
+                display: none;
+            }
+
+            /*To solve overlap bug at the edges during magnification*/
+            .small { display: block; }
+        </style>
+        <h:outputScript name="js/jquery-3.4.1.js"/>
+        <h:outputScript name="js/zoom.js"/>
+        <h:outputStylesheet library="css" name="imageZoomStyle.css"/>
+        
+        <ui:fragment rendered="#{queryBean.isSearching == false}" > 
+            <img class="img" id="myimage" src="#{image}" alt="Device"></img>  
+        </ui:fragment>
+        
+        <!--If only one item is pushed to screen, activate the magnifier -->
+        <ui:fragment rendered="#{queryBean.isSearching eq true and queryBean.isSearchingManual eq false}" >
+            <h:panelGrid columns="2" style="padding-left: 100px;margin-left:auto;margin-right:auto;width:100%; text-align: center;"> 
+
+                <div class="magnify">
+
+                    <!-- This is the magnifying glass which will contain the original/large version -->
+                    <div class="large"></div>
+
+                    <!-- This is the small image -->
+                    <img class="small" style="max-height: 300px; max-width: 300px; margin-top: 100px" src="#{image}"/>
+
+                </div> <h:outputText value="#{desc}"/>
+        </h:panelGrid>
+            </ui:fragment>
+        <!--Pass variables to be defined later in index using UI:param -->
+        <h:panelGrid columns="1" style="margin-left:auto;margin-right:auto;width:100%; text-align: center;">
+            <h:outputText style="color: #cc0000; font-weight: bold; font-size: 20px;" value="#{titleVar}"></h:outputText><br/>
+            <h:outputText escape="false" value="Qty: #{qty}"></h:outputText><br/>
+            <h:outputText style="color: green;" escape="false" value="Price: $#{price}"></h:outputText><br/>
+            <ui:fragment rendered="#{queryBean.isSearching == false || queryBean.isSearchingManual == true}">
+                <h:commandButton class="lbutton" value="View" action="#{queryBean.setNumSelected(item_no)}"></h:commandButton><br/>         
+            </ui:fragment>
+            <ui:fragment rendered="#{queryBean.isSearching == true and queryBean.isSearchingManual == false}">
+                <h:commandButton class="lbutton" value="Add to Cart" action="#{purchaseBean.addToCart(item_no)}"/><br/>         
+            </ui:fragment>
+        </h:panelGrid><br/> 
+
+    </ui:composition>
+
+
+</html>
